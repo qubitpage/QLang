@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- QUBITPAGE LOGO BANNER -->
-<img src="https://qubitpage.com/logo.png" alt="Qubitpage®" width="200"/>
+<img src="docs/logo.png" alt="Qubitpage®" width="220" />
 
 # QLang
 ### The Quantum Programming Language by **[Qubitpage®](https://qubitpage.com)**
@@ -16,6 +16,13 @@
 Write circuits in human-readable syntax. Compile to QASM/Qiskit. Run on IBM Torino, Fez, Marrakesh (156 qubits).
 
 ---
+
+## 📸 Platform Screenshot
+
+![QLang — Live Interface](docs/screenshot.png)
+
+> *Running live at [qubitpage.com](https://qubitpage.com) — fully browser-based, no installation needed.*
+
 
 ---
 
@@ -332,3 +339,25 @@ Built with ❤️ by **[Qubitpage®](https://qubitpage.com)**
 <br/><br/>
 <em>Qubitpage® — Quantum Computing for the Real World</em>
 </div>
+
+
+---
+
+## 🔬 Medical Researchers — Join Us
+
+Are you a scientist working on **cancer, tuberculosis, Alzheimer's, ALS, or rare diseases**?
+
+QubitPage® OS gives you a free, browser-based quantum drug discovery lab using:
+- Real IBM Quantum hardware (156 qubits)
+- MedGemma AI for disease diagnosis
+- TxGemma ADMET prediction  
+- QLang for quantum circuit execution
+
+**📧 Contact:** [contact@qubitpage.com](mailto:contact@qubitpage.com)  
+**Subject:** `[RESEARCHER] Name / Specialty / Institution`  
+**Platform:** [qubitpage.com](https://qubitpage.com) — try it free
+
+> *One GPU (RTX 3090) + QubitPage® OS = a quantum drug discovery lab for any researcher, anywhere in the world.*
+
+---
+
