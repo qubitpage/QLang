@@ -17,6 +17,18 @@ Write circuits in human-readable syntax. Compile to QASM/Qiskit. Run on IBM Tori
 
 ---
 
+---
+
+## 🌐 Ecosystem
+
+| Repository | Description | Status |
+|------------|-------------|--------|
+| **[QLang](https://github.com/qubitpage/QLang)** | ← This repo — Quantum Programming Language + Browser SDK | ✅ Live |
+| **[QuBIOS](https://github.com/qubitpage/QuBIOS)** | Transit Ring quantum middleware engine | ✅ Live |
+| **[QubitPage-OS](https://github.com/qubitpage/QubitPage-OS)** | Full Quantum OS Platform — IBM Quantum + MedGemma AI | ✅ Live |
+
+---
+
 **[🌐 qubitpage.com](https://qubitpage.com)** · **[📜 Language Spec](docs/language-spec.md)** · **[⚛️ IBM Native](docs/ibm-native.md)** · **[🔧 Install](INSTALL.md)** · **[💡 Examples](examples/)**
 
 </div>
