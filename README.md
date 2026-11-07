@@ -1,48 +1,14 @@
 <div align="center">
 
-<!-- QUBITPAGE LOGO BANNER -->
 <img src="docs/logo.png" alt="Qubitpage®" width="220" />
-
-<div align="center">
 
 [![lablab.ai 1st Place](https://img.shields.io/badge/🥇_1ST_PLACE-lablab.ai_AI_Meets_Robotics_2026-FFD700?style=for-the-badge&labelColor=1a1a2e)](https://lablab.ai/ai-hackathons/launch-fund-ai-meets-robotics)
 
-</div>
-
 # QLang
-### The Quantum Programming Language by **[Qubitpage®](https://qubitpage.com)**
+### A beginner-friendly quantum command language, by **[Qubitpage®](https://qubitpage.com)**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![IBM Quantum](https://img.shields.io/badge/IBM%20Quantum-Native-6929c4.svg)](docs/ibm-native.md)
-[![QuBIOS](https://img.shields.io/badge/QuBIOS-Powered-00d4ff.svg)](https://github.com/qubitpage/QuBIOS)
-[![Status](https://img.shields.io/badge/Status-Production-00ffaa.svg)](https://qubitpage.com)
-[![Version](https://img.shields.io/badge/Version-1.0.0-white.svg)](docs/language-spec.md)
-
-**QLang** is a high-level quantum programming language purpose-built for real quantum hardware.  
-Write circuits in human-readable syntax. Compile to QASM/Qiskit. Run on IBM Torino, Fez, Marrakesh (156 qubits).
-
----
-
-## 📸 Platform Screenshot
-
-![QLang — Live Interface](docs/screenshot.png)
-
-> *Running live at [qubitpage.com](https://qubitpage.com) — fully browser-based, no installation needed.*
-
-
----
-
-## 🌐 Ecosystem
-
-| Repository | Description | Status |
-|------------|-------------|--------|
-| **[QLang](https://github.com/qubitpage/QLang)** | ← This repo — Quantum Programming Language + Browser SDK | ✅ Live |
-| **[QuBIOS](https://github.com/qubitpage/QuBIOS)** | Transit Ring quantum middleware engine | ✅ Live |
-| **[QubitPage-OS](https://github.com/qubitpage/QubitPage-OS)** | Full Quantum OS Platform — IBM Quantum + MedGemma AI | ✅ Live |
-
----
-
-**[🌐 qubitpage.com](https://qubitpage.com)** · **[📜 Language Spec](docs/language-spec.md)** · **[⚛️ IBM Native](docs/ibm-native.md)** · **[🔧 Install](INSTALL.md)** · **[💡 Examples](examples/)**
+[![Status](https://img.shields.io/badge/Status-Educational-orange.svg)](#project-status)
 
 </div>
 
@@ -50,320 +16,98 @@ Write circuits in human-readable syntax. Compile to QASM/Qiskit. Run on IBM Tori
 
 ## What is QLang?
 
-QLang is a **quantum-first scripting language** developed by Qubitpage® as part of the QuBIOS ecosystem. It abstracts raw gate-level programming into readable, composable quantum programs — while remaining fully transparent to the underlying circuit representation.
+QLang is a simple, line-by-line **command language for learning quantum computing**. You type readable commands, and the QubitPage® OS interpreter builds and runs the circuit:
 
 ```qlang
-# Bell State — two entangled qubits
-ENTANGLE q0 q1
+ENTANGLE q0 q1      # H on q0, then CNOT q0 → q1 (a Bell pair)
 MEASURE q0 q1
-EXPORT json
+RUN 4096            # expect roughly 50% "00" and 50% "11"
 ```
 
 ```qlang
-# Grover Search Oracle — 3 qubits
-ORACLE grover 3
-OPTIMIZE circuit_depth
-PLOT histogram
+GHZ 4               # 4-qubit GHZ state
+GROVER 5 3          # Grover search for item 5 among 3-qubit states
+TELEPORT            # textbook teleportation circuit
 ```
 
-```qlang
-# Quantum-Classical Hybrid Pipeline
-VAR shots = 4096
-CIRCUIT bell
-  GATE H q0
-  GATE CNOT q0 q1
-  MEASURE q0 q1
-BENCHMARK shots
-```
+It's aimed at **students and newcomers**, who can run their first circuits in the browser without learning Python or Qiskit first. It isn't meant to replace OpenQASM, Qiskit or Cirq for research work.
+
+**This repository** contains the language documentation, example programs and `qlang_runtime.js`, a small browser SDK that sends QLang code to a QubitPage® OS server. **The interpreter itself** lives in [QubitPage-OS](https://github.com/qubitpage/QubitPage-OS) (`src/quantum_kernel.py`).
+
+> Running locally means circuits run in the **Stim** simulator. The OS also has a code path that can submit circuits to IBM Quantum with your own IBM token.
+
+<img src="docs/screenshot.png" alt="QLang terminal in QubitPage OS" width="720" />
 
 ---
 
-## Architecture
+## 🌐 Ecosystem
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     QLang Toolchain                          │
-│                                                             │
-│   .ql source  ──►  Lexer/Tokenizer  ──►  AST Parser        │
-│                                              │               │
-│                                              ▼               │
-│                                       Compile Target        │
-│                                    ┌────────────────┐       │
-│                                    │  Qiskit/QASM   │──►IBM │
-│                                    │  Stim Circuits  │──►Sim│
-│                                    │  QuBIOS Runtime │──►QEC│
-│                                    └────────────────┘       │
-│                                                             │
-│   Browser: qbp-runtime.js  ◄──────  REST API  ◄───────────  │
-└─────────────────────────────────────────────────────────────┘
-```
+| Repository | Description |
+|------------|-------------|
+| **[QLang](https://github.com/qubitpage/QLang)** | ← This repo: language docs, examples, browser SDK |
+| **[QuBIOS](https://github.com/qubitpage/QuBIOS)** | QEC & entanglement toolkit, simulation plus experiments on IBM hardware ([report](https://github.com/qubitpage/QuBIOS/blob/main/docs/HARDWARE_REPORT_2026-11-07.md)) |
+| **[QubitPage-OS](https://github.com/qubitpage/QubitPage-OS)** | Browser platform that hosts the QLang interpreter |
 
 ---
 
-## Language Features
+## Commands
 
-### 🔤 Core Language
+**Quantum**
 
-| Command | Syntax | Description |
-|---------|--------|-------------|
-| `VAR` | `VAR name = value` | Declare a quantum/classical variable |
-| `PRINT` | `PRINT expr` | Output a value |
-| `MATH` | `MATH expression` | Evaluate arithmetic/matrix expressions |
-| `IF/THEN` | `IF cond THEN cmd` | Classical conditional |
-| `LOOP` | `LOOP n CMD` | Repeat a command n times |
-| `FUNCTION` | `FUNCTION name args` | Define reusable quantum subroutine |
-| `PROGRAM` | `PROGRAM name` | Named quantum program block |
-| `IMPORT` | `IMPORT module` | Import standard quantum library |
-| `EXPORT` | `EXPORT format` | Export circuit/results (json, qasm, svg) |
-| `HISTORY` | `HISTORY` | Show execution history |
-| `BENCHMARK` | `BENCHMARK n` | Run n-shot benchmark |
+| Command | Example | Meaning |
+|---------|---------|---------|
+| `CIRCUIT <name> <n>` | `CIRCUIT demo 3` | New circuit with n qubits |
+| `H X Y Z S T <q>` | `H 0` | Single-qubit gates |
+| `CNOT CZ SWAP <a> <b>` | `CNOT 0 1` | Two-qubit gates |
+| `TOFFOLI <a> <b> <c>` | `TOFFOLI 0 1 2` | Controlled-controlled-X |
+| `MEASURE <q…> \| ALL` | `MEASURE ALL` | Add measurements |
+| `RUN [shots]` | `RUN 1024` | Execute the current circuit |
+| `ENTANGLE`, `SUPERPOSE` | `ENTANGLE 0 1` | Shortcuts for Bell pair / Hadamard |
+| `BELL`, `GHZ <n>`, `GROVER <t> <n>`, `TELEPORT` | `GHZ 4` | Ready-made textbook circuits |
+| `USE <backend>`, `BACKENDS` | `USE stim` | Choose / list backends |
+| `EXPORT <qasm\|json\|svg>` | `EXPORT qasm` | Export the circuit |
 
-### ⚛️ Quantum Operations
+**Scripting helpers:** `VAR`, `LET`, `PRINT`, `IF … THEN`, `LOOP`, `FOR … IN … TO`, `ARRAY`, `MATRIX`, `MATH`, `FUNCTION`, `PROGRAM`, `IMPORT`, `ENCODE/DECODE`, `HASH`, `RANDOM`, `QRNG`, `PLOT`, `HISTORY`, `CLEAR`.
 
-| Command | Syntax | Description |
-|---------|--------|-------------|
-| `ENTANGLE` | `ENTANGLE q0 q1` | Create Bell pair between qubits |
-| `SUPERPOSE` | `SUPERPOSE q0` | Apply Hadamard (superposition) |
-| `ORACLE` | `ORACLE type n` | Apply quantum oracle (grover, simon, deutsch) |
-| `GATE` | `GATE name qubit [ctrl]` | Apply named quantum gate |
-| `MEASURE` | `MEASURE q0 [q1...]` | Measure qubits, collapse state |
-| `CIRCUIT` | `CIRCUIT type` | Load a named circuit template |
-| `OPTIMIZE` | `OPTIMIZE target` | Optimize circuit (circuit_depth, t_count, swap_count) |
-
-### 🔐 Cryptography
-
-| Command | Syntax | Description |
-|---------|--------|-------------|
-| `ENCODE` | `ENCODE algo data` | Encode using quantum-safe algo (base64, sha256, qkd) |
-| `DECODE` | `DECODE algo data` | Decode |
-| `HASH` | `HASH algo data` | Quantum-resistant hash |
-| `RANDOM` | `RANDOM min max` | Quantum random number (QRNG) |
-| `ARRAY` | `ARRAY name [vals]` | Quantum register array |
+Full reference: [docs/language-spec.md](docs/language-spec.md)
 
 ---
 
-## IBM Quantum Native Support
+## Using the browser SDK
 
-QLang compiles directly to circuits compatible with **IBM Quantum Platform** via Qiskit. No transpilation middleware required.
-
-```qlang
-# Direct IBM backend targeting
-CIRCUIT bell
-  GATE H q0
-  GATE CNOT q0 q1
-  MEASURE q0 q1
-
-# Runs on IBM Torino (133q), Fez (156q), or Marrakesh (156q)
-EXPORT ibm --backend ibm_torino --shots 4096
+```html
+<script src="src/qlang_runtime.js"></script>
+<script>
+  QBP.execute("BELL").then(r => console.log(r));
+  QBP.simulate("ghz3", { shots: 1024 }).then(d => QBP.renderResult("out", d.data || d));
+</script>
 ```
 
-**Supported Backends:**
-
-| Backend | Qubits | Architecture | Status |
-|---------|--------|--------------|--------|
-| `ibm_torino` | 133 | Heron r1 | ✅ Supported |
-| `ibm_fez` | 156 | Heron r2 | ✅ Supported |
-| `ibm_marrakesh` | 156 | Heron r2 | ✅ Supported |
-| `ibm_brisbane` | 127 | Eagle r3 | ✅ Supported |
-| `ibm_sherbrooke` | 127 | Eagle r3 | ✅ Supported |
-| `aer_simulator` | ∞ | Classical Sim | ✅ Default |
-
-See [IBM Native Guide →](docs/ibm-native.md)
+`qlang_runtime.js` needs a running QubitPage® OS backend (it calls `/api/qplang/*` and `/api/quantum/*`).
 
 ---
 
-## REST API
+## Project status
 
-QLang ships with a production-grade REST API (Flask + Qiskit backend):
+QLang is an **educational project in active development**:
 
-```bash
-# Compile a QLang program
-POST /api/qplang/compile
-{"source": "ENTANGLE q0 q1\nMEASURE q0 q1"}
+- Each line is interpreted on its own (no full parser/compiler yet). A grammar, parser and OpenQASM 3 output are on the roadmap.
+- Some example files use a `GATE H q0` form that the current interpreter doesn't handle. Use `H 0` / `CNOT 0 1` until the examples are updated.
+- `QRNG` and `RANDOM` sample a **simulator**, so on a local backend they're classical pseudo-random numbers, not certified quantum randomness. Don't use them for cryptographic keys.
+- `QFT` and `WHILE` are listed in the in-app help but aren't implemented yet.
+- `OPTIMIZE` and `BENCHMARK` are helper/demo commands, not research-grade optimizers.
 
-# Tokenize (lexer step only)
-POST /api/qplang/tokenize
-{"source": "VAR x = 42"}
-
-# Execute a single command
-POST /api/qplang/execute
-{"command": "SUPERPOSE q0", "context": {}}
-```
-
-Response format:
-```json
-{
-  "success": true,
-  "tokens": [...],
-  "circuit": "OPENQASM 2.0;\n...",
-  "result": {"counts": {"00": 2048, "11": 2048}, "fidelity": 0.998}
-}
-```
-
----
-
-## Browser Runtime
-
-The `src/qlang_runtime.js` module provides a zero-dependency browser SDK:
-
-```javascript
-// Auto-initializes on DOMContentLoaded
-// Run a circuit from an HTML editor element
-QBP.runCircuit("my-circuit-id").then(data => {
-  QBP.renderResult("results-div", data);
-});
-
-// Quantum simulation
-QBP.simulate("bell", { shots: 1024 }).then(console.log);
-
-// Quantum-safe encryption
-QBP.encrypt("Hello quantum world").then(console.log);
-```
-
----
-
-## Quick Start
-
-```bash
-# 1. Clone
-git clone https://github.com/qubitpage/QLang.git
-cd QLang
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Run the QLang REPL
-python src/qlang_repl.py
-
-# 4. Or start the API server
-python src/qlang_server.py --port 5050
-```
-
-See the full [Installation Guide →](INSTALL.md)
-
----
-
-## Examples
-
-| Example | Description |
-|---------|-------------|
-| [hello_quantum.ql](examples/hello_quantum.ql) | Your first QLang program |
-| [bell_state.ql](examples/bell_state.ql) | Entangled Bell pair |
-| [grover_search.ql](examples/grover_search.ql) | Grover's search algorithm |
-| [ghz_state.ql](examples/ghz_state.ql) | GHZ 3-qubit entanglement |
-| [vqe_molecule.ql](examples/vqe_molecule.ql) | VQE molecular binding energy |
-| [qrng_dice.ql](examples/qrng_dice.ql) | Quantum random number generator |
-
----
-
-## Build on Top of QLang
-
-QLang is designed to be embedded and extended:
-
-```python
-from qlang import QLangKernel
-
-kernel = QLangKernel()
-
-# Compile
-result = kernel.compile_qplang("ENTANGLE q0 q1\nMEASURE q0 q1")
-
-# Execute command in context
-ctx = {"shots": 4096, "backend": "aer_simulator"}
-result = kernel.execute_qplang_command("SUPERPOSE q0", ctx)
-```
-
-### Extending with Custom Gates
-
-```python
-from qlang import GateRegistry
-
-@GateRegistry.register("MY_GATE")
-def my_custom_gate(circuit, qubit, **params):
-    """Custom 2-cycle phase rotation."""
-    circuit.rz(params.get("theta", 0.5), qubit)
-    circuit.rx(params.get("phi", 0.25), qubit)
-    return circuit
-```
-
----
-
-## Layer Architecture
-
-```
-QLang Application Layer
-    │
-    ├── QLang Source (.ql)
-    │       │
-    │       ▼
-    ├── Lexer → Tokenizer → AST
-    │       │
-    │       ▼
-    ├── Compiler (Qiskit / QASM / Stim)
-    │       │
-    │       ├── → IBM Quantum Hardware (Native)
-    │       ├── → Aer Simulator (Fast local)
-    │       └── → QuBIOS Buffer Layer (QEC + Escorts)
-    │
-    └── Results → JSON / Histogram / QASM export
-```
-
----
-
-## Powered by QuBIOS
-
-QLang integrates natively with **[QuBIOS](https://github.com/qubitpage/QuBIOS)** — Qubitpage's quantum BIOS layer that provides:
-- 🧠 **Steane [[7,1,3]] QEC** — error correction at the circuit level
-- 👥 **Virtual Qubit Escorts** — Bell-paired bodyguards per computation qubit
-- 🔄 **Transit Ring** — clockwise relay of QEC blocks for long-term state storage
-- 📡 **Entanglement Distillation** — BBPSSW protocol for high-fidelity Bell pairs
-
-```
-QLang Program
-      │
-      ▼
- QuBIOS Layer ──► EscortQubVirt ──► SteaneQEC ──► Stim Circuits
-      │
-      └──► TransitRing ──► TeleportEngine ──► IBM Hardware
-```
+### Roadmap
+- [ ] Formal grammar + parser, with clear error messages and line numbers
+- [ ] OpenQASM 3 export, verified against Qiskit
+- [ ] Examples tested in CI against the interpreter
+- [ ] Optional IBM Quantum runs from the browser, using the user's own token
 
 ---
 
 ## License
-
-MIT License — see [LICENSE](LICENSE)
-
-Built with ❤️ by **[Qubitpage®](https://qubitpage.com)**  
-© 2026 Qubitpage®. All rights reserved.
-
----
+MIT. See [LICENSE](LICENSE).
 
 <div align="center">
-<strong><a href="https://qubitpage.com">🌐 qubitpage.com</a></strong> · 
-<strong><a href="https://github.com/qubitpage/QuBIOS">⚛️ QuBIOS Framework</a></strong> · 
-<strong><a href="https://github.com/qubitpage/QLang">📦 QLang</a></strong>
-<br/><br/>
-<em>Qubitpage® — Quantum Computing for the Real World</em>
+<strong><a href="https://qubitpage.com">🌐 qubitpage.com</a></strong> · © 2026 Qubitpage® · contact@qubitpage.com
 </div>
-
-
----
-
-## 🔬 Medical Researchers — Join Us
-
-Are you a scientist working on **cancer, tuberculosis, Alzheimer's, ALS, or rare diseases**?
-
-QubitPage® OS gives you a free, browser-based quantum drug discovery lab using:
-- Real IBM Quantum hardware (156 qubits)
-- MedGemma AI for disease diagnosis
-- TxGemma ADMET prediction  
-- QLang for quantum circuit execution
-
-**📧 Contact:** [contact@qubitpage.com](mailto:contact@qubitpage.com)  
-**Subject:** `[RESEARCHER] Name / Specialty / Institution`  
-**Platform:** [qubitpage.com](https://qubitpage.com) — try it free
-
-> *One GPU (RTX 3090) + QubitPage® OS = a quantum drug discovery lab for any researcher, anywhere in the world.*
-
----
-
